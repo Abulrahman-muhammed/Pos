@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use App\Enums\ItemStatusEnum;
+use App\Enums\ItemStatusEnum;    
 class Item extends Model 
 {
 
@@ -14,7 +14,7 @@ class Item extends Model
     use SoftDeletes;
 
     protected $dates = ['deleted_at'];
-    protected $fillable = array('name', 'item_code', 'description', 'price', 'quantity', 'is_shown_in_store', 'minimum_stock','status' ,'category_id','unit_id');
+    protected $fillable = array('name', 'item_code', 'description', 'price','is_shown_in_store', 'minimum_stock','status' ,'category_id','unit_id');
     protected $casts = [
         'is_shown_in_store' => 'boolean',
         'status' => ItemStatusEnum::class
@@ -60,4 +60,19 @@ class Item extends Model
         return $this->belongsToMany('App\Models\Order', 'item_orders')->withPivot('unit_price','quantity','total_price');
     }
 
+    // warehouse relation
+    public function items()
+    {
+        return $this-morphToMany('App\Models\Item', 'itemable')->withPivot('quantity');
+    }
+
+    public function warehouses()
+    {
+        return $this->morphedByMany('App\Models\Warehouse', 'itemable')
+        ->withPivot('quantity')->withTimestamps();
+    }
+    public function warehouseTransactions()
+    {
+        return $this->hasMany('App\Models\WarehouseTransaction', 'item_id');
+    }
 }

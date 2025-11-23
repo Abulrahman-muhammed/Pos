@@ -4,8 +4,7 @@ namespace App\Http\Requests\Admin;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
-use App\Enums\ClientStatusEnum;
-class ClientUpdateRequest extends FormRequest
+class WarehouseRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,12 +21,14 @@ class ClientUpdateRequest extends FormRequest
      */
     public function rules(): array
     {
+        $warehouseId = $this->route('warehouse') ;
         return [
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['nullable', 'email', 'max:255', Rule::unique('clients')->ignore($this->client)],
-            'phone' => ['nullable', 'string', 'max:20', Rule::unique('clients')->ignore($this->client)],
-            'address' => ['nullable', 'string', 'max:500'],
-            'status' => ['required', Rule::in(ClientStatusEnum::values())],
+            'name' => ['required', 'string', 'max:255', 'unique:warehouses,name,' . $warehouseId],
+            'description' => ['nullable', 'string'],
+            'status' => [
+                'required',
+                Rule::in(\App\Enums\WarehouseStatusEnum::values())
+            ],
         ];
     }
 }

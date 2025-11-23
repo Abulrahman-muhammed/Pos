@@ -26,8 +26,8 @@
                             <th>Category</th>
                             <th>Unit</th>
                             <th>Price</th>
-                            <th>Quantity</th>
                             <th>Min. Stock</th>
+                            <th>Quantity</th>
                             <th>Shown in Store</th>
                             <th>Status</th>
                             <th >Actions</th>
@@ -42,8 +42,8 @@
                                 <td>{{ $item->category->name}}</td>
                                 <td>{{ $item->unit->name}}</td>
                                 <td>{{ number_format($item->price, 2) }}</td>
-                                <td>{{ $item->quantity }}</td>
                                 <td>{{ $item->minimum_stock }}</td>
+                                <td>{{ ($item->warehouses->sum('pivot.quantity') > 0)? $item->warehouses->sum('pivot.quantity'): 0 }}</td>
                                 <td>
                                     @if($item->is_shown_in_store)
                                         <span class="badge badge-success">Yes</span>
@@ -84,36 +84,5 @@
 @endsection
 
 @push('scripts')
-    <script>
-        $('.delete-button').on('click', function (e) {
-            e.preventDefault();
-            Swal.fire({
-                title: "Are you sure?",
-                text: "You won't be able to revert this!",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#3085d6",
-                cancelButtonColor: "#d33",
-                confirmButtonText: "Yes, delete it!"
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $.ajax({
-                        url: $(this).data('url'),
-                        type: 'POST',
-                        data: {
-                            _method: 'DELETE',
-                            _token: '{{ csrf_token() }}'
-                        },
-                        success: function (response) {
-                            Swal.fire("Deleted!", response.message, "success");
-                            location.reload();
-                        },
-                        error: function () {
-                            Swal.fire("Error!", "An error occurred while deleting the item.", "error");
-                        }
-                    });
-                }
-            });
-        });
-    </script>
+    @include('admin.layouts.partials._deleteAlert') 
 @endpush

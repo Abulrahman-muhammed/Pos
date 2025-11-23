@@ -28,7 +28,7 @@ class ItemUpdateRequest extends FormRequest
             'item_code'         => ['nullable', 'string', 'max:100', "unique:items,item_code,{$itemId}"],
             'description'       => ['nullable', 'string'],
             'price'             => ['required', 'numeric', 'min:0'],
-            'quantity'          => ['required', 'numeric', 'min:0'],
+            'quantity'          => ['nullable', 'numeric', 'min:0'],
             'minimum_stock'     => ['required', 'numeric', 'min:0'],
             'category_id'       => ['required', 'exists:categories,id'],
             'unit_id'           => ['required', 'exists:units,id'],
@@ -39,6 +39,7 @@ class ItemUpdateRequest extends FormRequest
             'status'            => ['required', Rule::in(ItemStatusEnum::values())],
             'delete_gallery'    => ['nullable', 'array'],
             'delete_gallery.*'  => ['integer', 'exists:files,id'],
+            'warehouse_id'      => ['nullable', 'exists:warehouses,id'],
         ];
     }
 }

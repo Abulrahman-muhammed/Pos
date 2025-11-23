@@ -72,36 +72,5 @@
 
 
 @push('scripts')
-    <script>
-        $('.delete-button').on('click', function (e) {
-            e.preventDefault();
-            Swal.fire({
-                title: "Are you sure?",
-                text: "This safe will be deleted!",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#3085d6",
-                cancelButtonColor: "#d33",
-                confirmButtonText: "Yes, delete it!"
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $.ajax({
-                        url: $(this).data('url'),
-                        type: 'POST',
-                        data: {
-                            _method: 'DELETE',
-                            _token: '{{ csrf_token() }}'
-                        },
-                        success: function (response) {
-                            Swal.fire("Deleted!", response.message, "success");
-                            location.reload();
-                        },
-                        error: function (xhr) {
-                            Swal.fire("Error!", "An error occurred while deleting the safe.", "error");
-                        }
-                    });
-                }
-            });
-        });
-    </script>
+    @include('admin.layouts.partials._deleteAlert')
 @endpush

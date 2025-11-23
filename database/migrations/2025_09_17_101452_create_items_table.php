@@ -15,7 +15,7 @@ class CreateItemsTable extends Migration {
 			$table->string('item_code')->nullable();
 			$table->text('description')->nullable();
 			$table->decimal('price', 10,2);
-			$table->decimal('quantity');
+			// $table->decimal('quantity');
 			$table->unsignedBigInteger('category_id');
 			$table->bigInteger('unit_id')->unsigned();
 			$table->boolean('is_shown_in_store');

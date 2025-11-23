@@ -1,19 +1,19 @@
 @extends('admin.layouts.app', [
-    'pageName' => 'Clients',
+    'pageName' => 'Warehouses',
 ])
 
 @section('content')
     <div class="col-sm-12">
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title">Clients List</h3>
+                <h3 class="card-title">Warehouses List</h3>
                 <div class="card-tools">
-                    <a href="{{ route('admin.clients.create') }}" class="btn btn-primary btn-sm">
+                    <a href="{{ route('admin.warehouses.create') }}" class="btn btn-primary btn-sm">
                         <i class="fas fa-plus"></i> Create
                     </a>
                 </div>
             </div>
-            <!-- /.card-header -->
+
             <div class="card-body">
 
                 @include('admin.layouts.partials._flash')
@@ -23,35 +23,36 @@
                         <tr>
                             <th style="width: 10px">#</th>
                             <th>Name</th>
-                            <th>Email</th>
-                            <th>Phone</th>
-                            <th>Address</th>
-                            <th>Balance</th>
+                            <th>Description</th>
+                            <th>Items Count</th>
                             <th>Status</th>
+                            <th>Created At</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($clients as $client)                                
+                        @foreach ($warehouses as $warehouse)
                             <tr>
-                                <td>{{ $loop->iteration}}</td>
-                                <td>{{ $client->name }}</td>
-                                <td>{{ $client->email }}</td>
-                                <td>{{ $client->phone }}</td>
-                                <td>{{ $client->address }}</td>
-                                <td>{{ number_format($client->balance, 2) }}</td>
+                                <td>{{ $loop->iteration }}</td>
+
+                                <td>{{ $warehouse->name }}</td>
+
+                                <td>{{ Str::limit($warehouse->description, 30) }}</td>
+                                <td>{{ $warehouse->items()->count() }}</td>
                                 <td>
-                                    <span class="badge badge-{{ $client->status->style() }}">
-                                        {{ $client->status->label() }}
-                                    </span>
+                                        <span class="badge badge-{{ $warehouse->status->style()}}">{{ $warehouse->status->label() }}</span>
                                 </td>
+
+                                <td>{{ $warehouse->created_at }}</td>
+
                                 <td>
-                                    <a href="{{ route('admin.clients.edit', $client->id) }}" class="btn btn-success btn-sm">
+                                    <a href="{{ route('admin.warehouses.edit', $warehouse->id) }}" class="btn btn-success btn-sm">
                                         <i class="fas fa-edit"></i>
                                     </a>
+
                                     <a href="#"
-                                        data-url="{{ route('admin.clients.destroy', $client->id) }}"
-                                        data-id="{{ $client->id }}"
+                                        data-url="{{ route('admin.warehouses.destroy', $warehouse->id) }}"
+                                        data-id="{{ $warehouse->id }}"
                                         class="btn btn-danger btn-sm delete-button">
                                         <i class="fas fa-trash"></i>
                                     </a>
@@ -62,9 +63,9 @@
                     </tbody>
                 </table>
             </div>
-            <!-- /.card-body -->
+
             <div class="card-footer clearfix">
-                {{ $clients->links() }}
+                {{ $warehouses->links() }}
             </div>
         </div>
     </div>

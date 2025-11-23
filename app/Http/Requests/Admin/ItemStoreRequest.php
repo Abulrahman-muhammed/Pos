@@ -36,6 +36,7 @@ class ItemStoreRequest extends FormRequest
             'main_image'   => ['nullable', 'image', 'mimes:jpg,jpeg,png,gif,webp', 'max:2048'],
             'gallery'   => ['nullable', 'array'],
             'gallery.*' => ['image', 'mimes:jpg,jpeg,png,gif,webp', 'max:2048'],
+            'warehouse_id'      => ['required', 'exists:warehouses,id'],
         ];
     }
 }

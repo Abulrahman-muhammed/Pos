@@ -3,6 +3,12 @@
 ])
 
 @section('content')
+    <style>
+        .uniform-input {
+            height: 42px !important;
+        }
+    </style>
+
     <div class="col-sm-12">
         <div class="card shadow-sm rounded-3">
             <div class="card-header bg-primary text-white">
@@ -16,8 +22,8 @@
                     {{-- Item Name --}}
                     <div class="form-group mb-3">
                         <label for="name" class="fw-bold">Item Name</label>
-                        <input class="form-control @error('name') is-invalid @enderror" id="name" name="name"
-                            placeholder="Enter item name" value="{{ old('name') }}">
+                        <input class="form-control uniform-input @error('name') is-invalid @enderror" id="name"
+                            name="name" placeholder="Enter item name" value="{{ old('name') }}">
                         @error('name')
                             <span class="invalid-feedback">{{ $message }}</span>
                         @enderror
@@ -26,8 +32,8 @@
                     {{-- Item Code --}}
                     <div class="form-group mb-3">
                         <label for="item_code" class="fw-bold">Item Code</label>
-                        <input class="form-control @error('item_code') is-invalid @enderror" id="item_code" name="item_code"
-                            placeholder="Enter item code" value="{{ old('item_code') }}">
+                        <input class="form-control uniform-input @error('item_code') is-invalid @enderror" id="item_code"
+                            name="item_code" placeholder="Enter item code" value="{{ old('item_code') }}">
                         @error('item_code')
                             <span class="invalid-feedback">{{ $message }}</span>
                         @enderror
@@ -43,32 +49,49 @@
                         @enderror
                     </div>
 
-                    {{-- Price / Quantity / Minimum Stock --}}
-                    <div class="row">
-                        <div class="form-group col-md-4 mb-3">
+                    {{-- Price / Quantity / Warehouse / Minimum Stock --}}
+                    <div class="row g-3">
+                        <div class="col-md-3">
                             <label for="price" class="fw-bold">Price</label>
-                            <input type="number" step="0.01" class="form-control @error('price') is-invalid @enderror"
-                                id="price" name="price" value="{{ old('price') }}">
+                            <input type="number" step="0.01"
+                                class="form-control uniform-input @error('price') is-invalid @enderror" id="price"
+                                name="price" value="{{ old('price') }}">
                             @error('price')
                                 <span class="invalid-feedback">{{ $message }}</span>
                             @enderror
                         </div>
 
-                        <div class="form-group col-md-4 mb-3">
+                        <div class="col-md-3">
                             <label for="quantity" class="fw-bold">Quantity</label>
                             <input type="number" step="0.01"
-                                class="form-control @error('quantity') is-invalid @enderror" id="quantity" name="quantity"
-                                value="{{ old('quantity') }}">
+                                class="form-control uniform-input @error('quantity') is-invalid @enderror" id="quantity"
+                                name="quantity" value="{{ old('quantity') }}">
                             @error('quantity')
                                 <span class="invalid-feedback">{{ $message }}</span>
                             @enderror
                         </div>
 
-                        <div class="form-group col-md-4 mb-3">
+                        <div class="col-md-3">
+                            <label for="warehouse_id" class="fw-bold">Warehouse</label>
+                            <select name="warehouse_id"
+                                class="form-control uniform-input select2 @error('warehouse_id') is-invalid @enderror">
+                                <option value="" selected>-- Select Warehouse --</option>
+                                @foreach ($warehouses as $warehouse)
+                                    <option value="{{ $warehouse->id }}" @selected(old('warehouse_id') == $warehouse->id)>
+                                        {{ $warehouse->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            @error('warehouse_id')
+                                <span class="invalid-feedback">{{ $message }}</span>
+                            @enderror
+                        </div>
+
+                        <div class="col-md-3">
                             <label for="minimum_stock" class="fw-bold">Minimum Stock</label>
                             <input type="number" step="0.01"
-                                class="form-control @error('minimum_stock') is-invalid @enderror" id="minimum_stock"
-                                name="minimum_stock" value="{{ old('minimum_stock') }}">
+                                class="form-control uniform-input @error('minimum_stock') is-invalid @enderror"
+                                id="minimum_stock" name="minimum_stock" value="{{ old('minimum_stock') }}">
                             @error('minimum_stock')
                                 <span class="invalid-feedback">{{ $message }}</span>
                             @enderror
@@ -76,13 +99,15 @@
                     </div>
 
                     {{-- Category & Unit --}}
-                    <div class="row">
-                        <div class="form-group col-md-6 mb-3">
+                    <div class="row g-3 mt-1">
+                        <div class="col-md-6">
                             <label for="category_id" class="fw-bold">Category</label>
-                            <select name="category_id" class="form-control select2 @error('category_id') is-invalid @enderror">
+                            <select name="category_id"
+                                class="form-control uniform-input select2 @error('category_id') is-invalid @enderror">
                                 <option value="" selected>-- Select Category --</option>
                                 @foreach ($categories as $category)
-                                    <option value="{{ $category->id }}" @selected(old('category_id') == $category->id)>{{ $category->name }}
+                                    <option value="{{ $category->id }}" @selected(old('category_id') == $category->id)>
+                                        {{ $category->name }}
                                     </option>
                                 @endforeach
                             </select>
@@ -91,12 +116,14 @@
                             @enderror
                         </div>
 
-                        <div class="form-group col-md-6 mb-3">
+                        <div class="col-md-6">
                             <label for="unit_id" class="fw-bold">Unit</label>
-                            <select name="unit_id" class="form-control select2 @error('unit_id') is-invalid @enderror">
+                            <select name="unit_id"
+                                class="form-control uniform-input select2 @error('unit_id') is-invalid @enderror">
                                 <option value="" selected>-- Select Unit --</option>
                                 @foreach ($units as $unit)
-                                    <option value="{{ $unit->id }}" @selected(old('unit_id') == $unit->id)>{{ $unit->name }}
+                                    <option value="{{ $unit->id }}" @selected(old('unit_id') == $unit->id)>
+                                        {{ $unit->name }}
                                     </option>
                                 @endforeach
                             </select>
@@ -107,7 +134,7 @@
                     </div>
 
                     {{-- Status --}}
-                    <div class="form-group mb-3">
+                    <div class="form-group mb-3 mt-3">
                         <label class="fw-bold">Status</label>
                         <div>
                             @foreach ($itemStatus as $value => $label)
@@ -124,14 +151,13 @@
                     {{-- Show in Store --}}
                     <div class="form-group mb-3">
                         <label class="fw-bold">
-                            {{-- if user dossnot check by default it will be false=>hidden  --}}
                             <input type="hidden" name="is_shown_in_store" value="0">
-
                             <input type="checkbox" name="is_shown_in_store" value="1"
                                 {{ old('is_shown_in_store') ? 'checked' : '' }}>
                             Show in Store
                         </label>
                     </div>
+
                     {{-- Main Photo --}}
                     <div class="form-group mb-3">
                         <label for="main_image" class="fw-bold">Main Photo</label>
@@ -141,9 +167,8 @@
                         @error('main_image')
                             <span class="invalid-feedback">{{ $message }}</span>
                         @enderror
-
                     </div>
-                    {{-- Main photo preview --}}
+
                     <div id="main-preview" class="mt-3"></div>
 
                     {{-- Gallery --}}
@@ -157,11 +182,7 @@
                         @enderror
                     </div>
 
-
-                    {{-- preview area --}}
                     <div class="row mt-3" id="gallery-preview"></div>
-
-                    {{-- <div id="image-preview" class="d-flex flex-wrap gap-3"></div> --}}
                 </form>
             </div>
 
@@ -171,6 +192,7 @@
         </div>
     </div>
 @endsection
+
 @push('scripts')
     <script>
         // ----------------- Gallery Preview -----------------

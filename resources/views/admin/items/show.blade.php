@@ -34,7 +34,7 @@
 
                     <div class="form-group col-md-4 mb-3">
                         <label class="fw-bold">Quantity</label>
-                        <input class="form-control" value="{{ $item->quantity }}" readonly>
+                        <input class="form-control" value="{{ $item->warehouses->sum('pivot.quantity') }}" readonly>
                     </div>
 
                     <div class="form-group col-md-4 mb-3">

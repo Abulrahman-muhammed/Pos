@@ -5,7 +5,7 @@ $(document).ready(function() {
     });
 
     $('.datepicker').datepicker({
-        dateFormat: 'dd-mm-yy',
+    dateFormat: 'yy-mm-dd',
         defaultDate: new Date(),
         autoclose: true,
         todayHighlight: true

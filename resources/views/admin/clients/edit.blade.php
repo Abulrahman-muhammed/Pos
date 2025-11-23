@@ -62,18 +62,6 @@
                         @enderror
                     </div>
 
-                    <!-- Balance -->
-                    <div class="form-group">
-                        <label for="balance">Balance</label>
-                        <input class="form-control @error('balance') is-invalid @enderror" id="balance" type="number"
-                            step="0.01" placeholder="Enter client balance" name="balance"
-                            value="{{ old('balance', $client->balance) }}">
-                        @error('balance')
-                            <span class="invalid-feedback" role="alert">
-                                <strong>{{ $message }}</strong>
-                            </span>
-                        @enderror
-                    </div>
 
                     <!-- Status -->
                     <div class="form-group">

@@ -8,6 +8,8 @@ use App\Models\Client;
 use App\Http\Requests\Admin\ClientStoreRequest;
 use App\Http\Requests\Admin\ClientUpdateRequest;
 use App\Enums\ClientStatusEnum;
+use Illuminate\Support\Facades\DB;
+
 class ClientController extends Controller
 {
     /**
@@ -34,18 +36,27 @@ class ClientController extends Controller
      */
     public function store(ClientStoreRequest $request)
     {
-        // dd($request->validated());
+        DB::beginTransaction();
+
         $client = Client::create($request->validated());
-        return redirect()->route('admin.clients.index')->with('success', 'Client created successfully.');
+        $balance = $request->balance ?? 0;
+
+        $client->accountTransactions()->create([
+            'user_id' => auth()->id(),
+            'credit' =>  0,
+            'debit' =>0,
+            'balance' => $balance,
+            'balance_after' => $balance,
+            'client_id' => $client->id,
+            'description' => 'Client Opening Balance',
+        ]);
+
+        DB::commit();
+
+        session()->flash('success', 'Client created successfully.');
+        return redirect()->route('admin.clients.index');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
 
     /**
      * Show the form for editing the specified resource.
@@ -64,7 +75,8 @@ class ClientController extends Controller
     {
         $client = Client::findOrFail($id);
         $client->update($request->validated());
-        return redirect()->route('admin.clients.index')->with('success', 'Client updated successfully.');   
+        session()->flash('success', 'Client updated successfully.');
+        return redirect()->route('admin.clients.index'); 
     }
 
     /**
@@ -72,8 +84,16 @@ class ClientController extends Controller
      */
     public function destroy(string $id)
     {
+        DB::beginTransaction();
         $client = Client::findOrFail($id);
+        if ($client->sales()->exists()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Cannot delete client with associated sales.',
+            ]);
+        }
         $client->delete();
+        DB::commit();
         return  response()->json([
             'status' => 'success',
             'message' => 'Client deleted successfully.'

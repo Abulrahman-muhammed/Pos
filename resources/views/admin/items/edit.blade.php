@@ -47,7 +47,7 @@
 
                     {{-- Price / Quantity / Minimum Stock --}}
                     <div class="row">
-                        <div class="form-group col-md-4 mb-3">
+                        <div class="form-group  col-md-6 mb-3">
                             <label for="price" class="fw-bold">Price</label>
                             <input type="number" step="0.01" class="form-control @error('price') is-invalid @enderror"
                                 id="price" name="price" value="{{ old('price', $item->price) }}">
@@ -56,17 +56,9 @@
                             @enderror
                         </div>
 
-                        <div class="form-group col-md-4 mb-3">
-                            <label for="quantity" class="fw-bold">Quantity</label>
-                            <input type="number" step="0.01"
-                                class="form-control @error('quantity') is-invalid @enderror" id="quantity" name="quantity"
-                                value="{{ old('quantity', $item->quantity) }}">
-                            @error('quantity')
-                                <span class="invalid-feedback">{{ $message }}</span>
-                            @enderror
-                        </div>
 
-                        <div class="form-group col-md-4 mb-3">
+
+                        <div class="form-group  col-md-6 mb-3">
                             <label for="minimum_stock" class="fw-bold">Minimum Stock</label>
                             <input type="number" step="0.01"
                                 class="form-control @error('minimum_stock') is-invalid @enderror" id="minimum_stock"

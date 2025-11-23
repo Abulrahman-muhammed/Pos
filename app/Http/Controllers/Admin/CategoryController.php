@@ -8,14 +8,16 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Category;
 use App\Enums\CategoryStatusEnum;
-use App\Traits\ImageTrait;
 use Illuminate\Support\Facades\Storage;
 use App\Enums\CategoryImageUsageEnum;
-
+use App\Services\UploadimageService;
 class CategoryController extends Controller
 {
-    use ImageTrait;
-
+    protected $uploader;
+    public function __construct(UploadimageService $uploader)
+    {
+        $this->uploader = $uploader;
+    }
     /**
      * Display a listing of the resource.
      */
@@ -45,25 +47,16 @@ class CategoryController extends Controller
     
         // =============== image uploading ====================
         if ($request->hasFile('image')) {
-            $uploaded = $this->uploadImage($request->file('image'), 'categories');
-    
-            $category->photo()->create([
-                'usage' => CategoryImageUsageEnum::USAGE->value,
-                'path'  => $uploaded['path'],
-                'ext'   => $request->file('image')->getClientOriginalExtension(),
-            ]);
+            $file = $this->uploader->uploadImage(
+                $request->file('image'),
+                'categories',
+                CategoryImageUsageEnum::USAGE->value
+            );
+            $category->photo()->create($file);
         }
     
         return redirect()->route('admin.categories.index')->with('success', 'Category created successfully .');
 }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
 
     /**
      * Show the form for editing the specified resource.
@@ -80,28 +73,31 @@ class CategoryController extends Controller
      */
     public function update(CategoryUpdateRequest $request, string $id)
     {
-        // dd($request->all());
-        $category = Category::findOrFail($id);        
+        $category = Category::findOrFail($id);
+
         $category->update($request->validated());
-        
-        // =============== image uploading ====================
+
         if ($request->hasFile('image')) {
-            $uploaded = $this->uploadImage($request->file('image'), 'categories');
-        
+
+            // old image delete
             if ($category->photo && $category->photo->path) {
-                Storage::disk('public')->delete($category->photo->path);
+                $this->uploader->delete($category->photo->path);
+                $category->photo()->delete();
             }
-        
-            $category->photo()->create(
-                [
-                    'path' => $uploaded['path'],
-                    'usage' => CategoryImageUsageEnum::USAGE->value,
-                    'ext'  => $request->file('image')->getClientOriginalExtension(),
-                ]
+
+            // new
+            $file = $this->uploader->uploadImage(
+                $request->file('image'),
+                'categories',
+                CategoryImageUsageEnum::USAGE->value
             );
+
+            $category->photo()->create($file);
         }
-    
-        return redirect()->route('admin.categories.index')->with('success', 'Category Updated successfully .');
+
+        return redirect()
+            ->route('admin.categories.index')
+            ->with('success', 'Category updated successfully.');
     }
 
     /**
@@ -118,17 +114,14 @@ class CategoryController extends Controller
             ], 400);
         }
 
-
+        // Delete image
         if ($category->photo && $category->photo->path) {
-            // Delete Photo From Storage
-            Storage::disk('public')->delete($category->photo->path);
-    
-            // Delete image from table
+            $this->uploader->delete($category->photo->path);
             $category->photo()->delete();
         }
-    
+
         $category->delete();
-    
+
         return response()->json([
             'status' => 'success',
             'message' => 'Category deleted successfully.'

@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\ItemController;
 use App\Http\Controllers\Admin\ClientController;
 use App\Http\Controllers\Admin\SafeController;
 use App\Http\Controllers\Admin\SaleController;
+use App\Http\Controllers\Admin\WarehouseController;
 use Illuminate\Support\Facades\Auth;
 // Route::get('/', function () {
 //     return view('admin/home');
@@ -27,6 +28,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
         Route::resource('clients', ClientController::class);
         Route::resource('safes', SafeController::class);
         Route::resource('sales', SaleController::class)->only('create','store');
+        Route::resource('warehouses', WarehouseController::class);
 
     });
 });
